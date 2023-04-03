@@ -100,6 +100,7 @@ def find_qualifying_loans(bank_data, credit_score, debt, income, loan, home_valu
     bank_data_filtered = filter_debt_to_income(monthly_debt_ratio, bank_data_filtered)
     bank_data_filtered = filter_loan_to_value(loan_to_value_ratio, bank_data_filtered)
 
+
     print(f"Found {len(bank_data_filtered)} qualifying loans")
    
 
@@ -107,76 +108,54 @@ def find_qualifying_loans(bank_data, credit_score, debt, income, loan, home_valu
 
 
 
-def save_qualifying_loans(bank_data, credit_score, debt, income, loan_amount, home_value):
+def save_csv(bank_data, credit_score, debt, income, loan_amount, home_value):
     """Saves the qualifying loans to a CSV file.
 
+    Save csv 
+        - Safe only qualified list 
     Args:
         qualifying_loans (list of lists): The qualifying bank loans.
     """
     qualifying_return = find_qualifying_loans(
         bank_data, credit_score, debt, income, loan_amount, home_value
     )
-    
-
-
+ 
     with open('qualified_loaners.csv', 'w') as csv_file:
-        # fieldnames = qualifying_return[0].keys()
-        # fieldnames = ["Lender", "Max Loan Amount", "Max LTV", "Max DTI", "Min Credit Score", "Interest Rate"]
         output_path = Path("C:/Users/Eyasu/Desktop/ClassSoln/Loan_Qualifier-/data/qualified_loaners.csv")
         writer = csv.writer(csv_file, delimiter=',')
         writer.writerows(qualifying_return)
 
-        # f = open ('Qualified_Loans', 'r')
-        # print (f.read())
-        # f.close()
-
-        
-
-        
-    # @TODO: Complete the usability dialog for savings the CSV Files.
-    # YOUR CODE HERE!
-    # qualifying_return = find_qualifying_loans(
-    #     bank_data, credit_score, debt, income, loan_amount, home_value
-    # )
-    # with open ("inexpensive_loans.csv", mode="w") as csvfile:
-    #     output_path = Path("C:/Users/Eyasu/Desktop/ClassSoln/Loan_Qualifier-/data/qualified_loaners.csv")
-    #     fieldnames = ["Lender", "Max Loan Amount", "Max LTV", "Max DTI", "Min Credit Score", "Interest Rate"]
-       
-    #     lender_value = qualifying_return[0][0]
-    #     print (lender_value)
-
-    #     writer.writerow({"Lender": lender_value, "Max Loan Amount":lender_value, "Max LTV":lender_value, "Max DTI":lender_value, "Min Credit Score":lender_value, "Interest Rate":lender_value})
-        
-    #     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-    #     writer.writeheader()
-    #     writer.writerow (qualifying_return)
-
-        # writer.writerow({"credit_score": credit_score, "monthly_debet":{debt}", "monthly_income:{income}", "loan_amount:{loan_amount}", "home_value:{home_value}", "debt_income_ratio:{home_value}", "loan_value_ratio:{home_value}", "qualified_loan:{home_value}"})                 
 
 
+def save_qualifying_loans(bank_data, credit_score, debt, income, loan_amount, home_value):
+    """Saves the qualifying loans to a CSV file.
+    
+    Save qualified loan based on 
+       - Applicant response 
+       - Number of qualified loan 
 
+    Args:
+        qualifying_loans (list of lists): The qualifying bank loans.
+        Save the result : Request the applicante to save the result
+    """
 
-# def run():
-#     """The main function for running the script."""
+    save_qualifying_loans_result = questionary.text("Do you want to save qualified loan result?").ask("yes", "NO")
 
-#     # Load the latest Bank data
-#     bank_data = load_bank_data()
-
-#     # Get the applicant's information
-#     credit_score, debt, income, loan_amount, home_value = get_applicant_info()
+    qualifying_return = len(find_qualifying_loans(
+        bank_data, credit_score, debt, income, loan_amount, home_value
+    ))
 
     
+    if qualifying_return == 0:
+        print ("No qualified loan found")
 
-#     # Find qualifying loans
-#     qualifying_loans = find_qualifying_loans(
-#         bank_data, credit_score, debt, income, home_value, loan_amount
-#     )
+    if (save_qualifying_loans_result == "yes") and qualifying_return > 0: 
+       
+        save_csv(bank_data, credit_score, debt, income, loan_amount, home_value)
+        print ("The qualified loan result saved in the '..\Loan_Qualifier-\qualified_loaners.csv' ")
+            
+    
 
-
-#     # # Save qualifying loans
-#     # save_qualifying_loans(credit_score, debt, income, loan_amount, home_value)
-#     if qualifying_loans == 0:
-#         save_qualifying_loans(credit_score, debt, income, loan_amount, home_value)
 
 
 def run():
@@ -195,7 +174,8 @@ def run():
 
     # Save qualifying loans
     save_qualifying_loans(bank_data, credit_score, debt, income, loan_amount, home_value)
+   
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
     fire.Fire(run)
