@@ -24,6 +24,29 @@ from qualifier.filters.credit_score import filter_credit_score
 from qualifier.filters.debt_to_income import filter_debt_to_income
 from qualifier.filters.loan_to_value import filter_loan_to_value
 
+class color:
+
+   PURPLE = '\033[95m'
+
+   CYAN = '\033[96m'
+
+   DARKCYAN = '\033[36m'
+
+   BLUE = '\033[94m'
+
+   GREEN = '\033[92m'
+
+   YELLOW = '\033[93m'
+
+   RED = '\033[91m'
+
+   BOLD = '\033[1m'
+
+   UNDERLINE = '\033[4m'
+
+   END = '\033[0m'
+
+
 
 def load_bank_data():
     """Ask for the file path to the latest banking data and load the CSV file.
@@ -46,7 +69,7 @@ def get_applicant_info():
     Returns:
         Returns the applicant's financial information.
     """
-
+    print (color.BLUE +"Welcome to Loan Qualifier"+ color.END)
     credit_score = questionary.text("What's your credit score?").ask()
     debt = questionary.text("What's your current amount of monthly debt?").ask()
     income = questionary.text("What's your total monthly income?").ask()
@@ -85,7 +108,7 @@ def find_qualifying_loans(bank_data, credit_score, debt, income, loan, home_valu
         A list of the banks willing to underwrite the loan.
 
     """
-
+    
     # Calculate the monthly debt ratio
     monthly_debt_ratio = calculate_monthly_debt_ratio(debt, income)
     print(f"The monthly debt to income ratio is {monthly_debt_ratio:.02f}")
@@ -147,12 +170,14 @@ def save_qualifying_loans(bank_data, credit_score, debt, income, loan_amount, ho
 
     
     if qualifying_return == 0:
-        print ("No qualified loan found")
+        print (color.RED +"No qualified loan found"+ color.END)
+        print(color.GREEN +"Thank You for using Loan Qualifier"+ color.END)
 
     if (save_qualifying_loans_result == "yes") and qualifying_return > 0: 
        
         save_csv(bank_data, credit_score, debt, income, loan_amount, home_value)
-        print ("The qualified loan result saved in the '..\Loan_Qualifier-\qualified_loaners.csv' ")
+        print (color.GREEN +"The qualified loan result saved in the '..\Loan_Qualifier-\qualified_loaners.csv' "+ color.END)
+        print (color.GREEN +"Thank You for using Loan Qualifier"+ color.END)
             
     
 
